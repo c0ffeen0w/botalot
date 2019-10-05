@@ -12,6 +12,7 @@ active_order = api.dime(config.dime_side)
 
 while True:
     try:
+        api.calibrate_time_with_server()
         api.show_order_book()
         time.sleep(config.dime_check_sec)
         if 'id' in active_order:

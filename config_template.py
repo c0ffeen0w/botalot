@@ -10,6 +10,7 @@ abcc_secret = b""
 
 # find your utc_correction with calibrate_time.py
 utc_correction = 0
+previous_utc = 0  # don't touch this
 
 # find market code to trade with show_markets.py
 market = ""

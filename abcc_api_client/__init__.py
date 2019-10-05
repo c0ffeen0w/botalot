@@ -24,8 +24,15 @@ def sign_sha256(key, message):
 
 
 def get_unix_timestamp(utc_correction):
-    time.sleep(1)
-    utc = utc_correction + int(datetime.datetime.utcnow().timestamp())
+    utc = int(utc_correction) + int(datetime.datetime.utcnow().timestamp())
+    return utc
+
+
+def get_corrected_unix_timestamp():
+    utc = get_unix_timestamp(config.utc_correction)
+    if utc <= config.previous_utc:
+        utc = config.previous_utc + 1
+    config.previous_utc = utc
     return utc
 
 
@@ -39,7 +46,7 @@ def calibrate_time_with_server():
     req = "{}{}?{}&signature={}".format(server, request_endpoint, params, sig)
     (resp, content) = h.request(req, request_method, headers={'cache-control': 'no-cache'})
     data = json.loads(content)
-    print(data)
+    # print(data)
     if 'error' in data:
         error = data['error']
         if int(error['code']) == 11004:
@@ -47,7 +54,9 @@ def calibrate_time_with_server():
             tokens = msg.split(' ')
             our_utc = tokens[2].split('.')[0]
             their_utc = tokens[8].split('.')[0]
-            print("\nplease put in config.py: utc_correction = ", int(their_utc) - int(our_utc))
+            utc_diff = int(their_utc) - int(our_utc)
+            print("\ndetected utc_correction = ", utc_diff)
+            config.utc_correction = utc_diff
         else:
             print("unexpected error:", error)
     else:
@@ -57,7 +66,7 @@ def calibrate_time_with_server():
 def show_open_orders():
     request_method = "GET"
     request_endpoint = "/api/v1/exchange/orders"
-    tonce = get_unix_timestamp(config.utc_correction)
+    tonce = get_corrected_unix_timestamp()
     params = "access_key={}&tonce={}".format(config.abcc_key, tonce)
     payload = "{}|{}|{}".format(request_method, request_endpoint, params)
     sig = sign_sha256(config.abcc_secret, payload)
@@ -71,7 +80,7 @@ def show_open_orders():
 def clear_open_orders():
     request_method = "POST"
     request_endpoint = "/api/v1/exchange/orders/clear"
-    tonce = get_unix_timestamp(config.utc_correction)
+    tonce = get_corrected_unix_timestamp()
     params = "access_key={}&market_code={}&tonce={}".format(config.abcc_key, config.market, tonce)
     payload = "{}|{}|{}".format(request_method, request_endpoint, params)
     sig = sign_sha256(config.abcc_secret, payload)
@@ -84,7 +93,7 @@ def clear_open_orders():
 def clear_all_markets_open_orders():
     request_method = "POST"
     request_endpoint = "/api/v1/exchange/orders/clear"
-    tonce = get_unix_timestamp(config.utc_correction)
+    tonce = get_corrected_unix_timestamp()
     params = "access_key={}&tonce={}".format(config.abcc_key, tonce)
     payload = "{}|{}|{}".format(request_method, request_endpoint, params)
     sig = sign_sha256(config.abcc_secret, payload)
@@ -97,7 +106,7 @@ def clear_all_markets_open_orders():
 def show_markets():
     request_method = "GET"
     request_endpoint = "/api/v1/common/markets"
-    tonce = get_unix_timestamp(config.utc_correction)
+    tonce = get_corrected_unix_timestamp()
     params = "access_key={}&tonce={}".format(config.abcc_key, tonce)
     payload = "{}|{}|{}".format(request_method, request_endpoint, params)
     sig = sign_sha256(config.abcc_secret, payload)
@@ -110,7 +119,7 @@ def show_markets():
 def get_order_book():
     request_method = "GET"
     request_endpoint = "/api/v1/exchange/order_book"
-    tonce = get_unix_timestamp(config.utc_correction)
+    tonce = get_corrected_unix_timestamp()
     params = "access_key={}&market_code={}&tonce={}".format(config.abcc_key, config.market, tonce)
     payload = "{}|{}|{}".format(request_method, request_endpoint, params)
     sig = sign_sha256(config.abcc_secret, payload)
@@ -190,7 +199,7 @@ def get_order_action_from_side(side):
 def send_order(side, size, price, type):
     request_method = "POST"
     request_endpoint = "/api/v1/exchange/orders"
-    tonce = get_unix_timestamp(config.utc_correction)
+    tonce = get_corrected_unix_timestamp()
     # body = {}
     order_action = get_order_action_from_side(side)
     params = "access_key={}&market_code={}&ord_type={}&price={}&side={}&tonce={}&volume={}" \
