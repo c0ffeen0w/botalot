@@ -121,13 +121,12 @@ def get_order_book():
 
 
 def get_sorted_book_half(whole_order_book, side):
-    # order book is received from abcc with asks and bids sorted descending
-    # asks are here reversed to have best order in index 0 for both sides
-    if side == BID_SIDE:
-        return whole_order_book[BID_SIDE]
-    if side == ASK_SIDE:
-        return whole_order_book[ASK_SIDE][::-1]
-    raise Exception("unknown book side")
+    return whole_order_book[side]
+    # if side == BID_SIDE:
+    #     return whole_order_book[BID_SIDE]
+    # if side == ASK_SIDE:
+    #     return whole_order_book[ASK_SIDE]
+    # raise Exception("unknown book side")
 
 
 def show_order_book():
@@ -135,7 +134,7 @@ def show_order_book():
     print("market:", config.market, str(datetime.datetime.now()).split(".")[0])
     p = PrettyTable(['bid_size', 'price', 'ask_size'])
     p.align['price'] = "l"
-    for ask in book['asks']:
+    for ask in book['asks'][::-1]:
         p.add_row(['', ask['price'], ask['remaining_volume']])
     p.add_row(['', '', ''])
     for bid in book['bids']:

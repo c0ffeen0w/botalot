@@ -26,3 +26,6 @@ dime_side = BID_SIDE
 
 # interval in seconds to check for diming possibility
 dime_check_sec = 15
+
+# interval to wash
+wash_check_sec = 30
