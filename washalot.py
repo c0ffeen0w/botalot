@@ -2,6 +2,7 @@ import abcc_api_client as api
 import config
 import time
 import sys
+import random
 from decimal import *
 
 active_order = []
@@ -37,7 +38,8 @@ while True:
                 active_order = api.dime(config.dime_side)
             elif api.get_unix_timestamp(0) > nextWashTime:
                 print("wash_order:")
-                wash_order = api.send_order(get_washing_order_side(), size, price, api.ORDER_TYPE_LIMIT)
+                wash_size = random.randrange(config.min_order_size, size)
+                wash_order = api.send_order(get_washing_order_side(), wash_size, price, api.ORDER_TYPE_LIMIT)
                 print(wash_order)
                 nextWashTime = config.wash_check_sec + api.get_unix_timestamp(0)
 

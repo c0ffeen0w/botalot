@@ -30,3 +30,6 @@ dime_check_sec = 15
 
 # interval to wash. in seconds. yes, hygiene is important to bots!
 wash_check_sec = 40
+
+# min order size to wash. actual order size will be random between this and dime order size
+min_order_size = 1500
