@@ -10,12 +10,13 @@ This is a partial implementation of the abcc.com API with examples of bots using
 ## configuration
 - copy config_template.py config.py
 - edit config.py and add your API keys
-- `python calibrate_time.py` find your utc_timestamp correction and set it in config.py
+
 - `python show_markets.py` find the market code you want to trade. Use multiple installations for multiple markets, if you dare. 
 - edit bot parameters to your liking
 
 ## tools
 
+- `python calibrate_time.py` show your utc_timestamp correction. in the bots this is automatic now.
 - `python show_open_orders.py` show a list of all open orders
 - `python show_order_book.py` show the order book of the configured market 
 - `python clear_open_orders.py` clear only those orders in the configured market
