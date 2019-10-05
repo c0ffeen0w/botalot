@@ -6,6 +6,7 @@ from decimal import *
 
 active_order = []
 
+api.calibrate_time_with_server()
 api.clear_open_orders()
 api.show_order_book()
 active_order = api.dime(config.dime_side)

@@ -6,8 +6,8 @@ import random
 from decimal import *
 
 active_order = []
-
 nextWashTime = config.wash_check_sec + api.get_unix_timestamp(0)
+
 
 
 def get_washing_order_side():
@@ -18,6 +18,8 @@ def get_washing_order_side():
     else:
         raise Exception("unknown side!")
 
+
+api.calibrate_time_with_server()
 
 api.clear_open_orders()
 api.show_order_book()
