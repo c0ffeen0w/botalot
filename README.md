@@ -24,6 +24,7 @@ This is a partial implementation of the abcc.com API with examples of bots using
 ### washalot
 - run with `python washalot.py`
 - this bot allows to dime automatically like dimealot but additionally has a timer that triggers a second order to trade against the diming order. this behaviour can be useful to study and improve the management of trades and positions within the bot. or simply to donate some fees to the exchange. use wisely.
+- the bots can be stopped with Ctrl-C and should try to cancel all active orders in their respective markets
 
 ## disclaimer
 - well, you know it: USE AT YOUR OWN RISK! this software comes as is, without any guarantees or warranty! 
