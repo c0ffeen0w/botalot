@@ -154,11 +154,26 @@ def get_best_size(sorted_half_book):
     return sorted_half_book[0]['remaining_volume']
 
 
+def get_best_size(sorted_half_book):
+    if len(sorted_half_book) < 1:
+        raise Exception("book side empty")
+    return sorted_half_book[0]['remaining_volume']
+
+
 def is_best_price(price, side):
     whole_book = get_order_book()
     book_half = get_sorted_book_half(whole_book, side)
     best_price = Decimal(get_best_price(book_half))
     if price == best_price:
+        return True
+    return False
+
+
+def is_best_size(size, side):
+    whole_book = get_order_book()
+    book_half = get_sorted_book_half(whole_book, side)
+    best_size = get_best_size(book_half)
+    if size == best_size:
         return True
     return False
 

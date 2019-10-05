@@ -28,4 +28,4 @@ dime_side = BID_SIDE
 dime_check_sec = 15
 
 # interval to wash
-wash_check_sec = 30
+wash_check_sec = 40
