@@ -1,5 +1,9 @@
 # copy this template file to 'config.py' and make changes there
 
+# values defined in api of abcc.com
+BID_SIDE = "bids"
+ASK_SIDE = "asks"
+
 # your api key and secret from abcc
 abcc_key = ""
 abcc_secret = b""
@@ -14,6 +18,11 @@ market = ""
 # a bot dimes another order by this amount to be in front of it
 tick_size = "0.00000001"
 
-order_size = 1
+# size of the diming order
+order_size = 1500
 
+# side of the diming order
+dime_side = BID_SIDE
 
+# interval in seconds to check for diming possibility
+dime_check_sec = 15

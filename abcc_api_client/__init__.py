@@ -1,7 +1,6 @@
 import json
 import config
 import httplib2
-import urllib
 import hmac
 import hashlib
 import datetime
@@ -9,13 +8,13 @@ from prettytable import PrettyTable
 from decimal import *
 import time
 
+from config import BID_SIDE, ASK_SIDE
+
 h = httplib2.Http()
 server = "https://api.abcc.com"
 
 tick_size = Decimal(config.tick_size)
 
-BID_SIDE = "bids"
-ASK_SIDE = "asks"
 ORDER_TYPE_LIMIT = "limit"
 ORDER_TYPE_MARKET = "market"
 
@@ -79,7 +78,7 @@ def clear_open_orders():
     req = "{}{}?{}&signature={}".format(server, request_endpoint, params, sig)
     (resp, content) = h.request(req, request_method, headers={'cache-control': 'no-cache'})
     data = json.loads(content)
-    print(data)
+    print("deleted orders: ", data)
 
 
 def clear_all_markets_open_orders():
@@ -133,7 +132,7 @@ def get_sorted_book_half(whole_order_book, side):
 
 def show_order_book():
     book = get_order_book()
-    print("market: ", config.market)
+    print("market:", config.market, str(datetime.datetime.now()).split(".")[0])
     p = PrettyTable(['bid_size', 'price', 'ask_size'])
     p.align['price'] = "l"
     for ask in book['asks']:
@@ -154,6 +153,15 @@ def get_best_size(sorted_half_book):
     if len(sorted_half_book) < 1:
         raise Exception("book side empty")
     return sorted_half_book[0]['remaining_volume']
+
+
+def is_best_price(price, side):
+    whole_book = get_order_book()
+    book_half = get_sorted_book_half(whole_book, side)
+    best_price = Decimal(get_best_price(book_half))
+    if price == best_price:
+        return True
+    return False
 
 
 def get_order_action_from_side(side):
@@ -181,10 +189,12 @@ def send_order(side, size, price, type):
     if 'error' in data:
         print(data)
         raise Exception(str(data))
-    return data
+    if 'order' not in data:
+        raise Exception(str(data))
+    return data['order']
 
 
-def dime_ask_side():
+def dime(side):
     whole_book = get_order_book()
     bid_side = get_sorted_book_half(whole_book, BID_SIDE)
     ask_side = get_sorted_book_half(whole_book, ASK_SIDE)
@@ -193,6 +203,14 @@ def dime_ask_side():
     if best_ask_price - best_bid_price < tick_size:
         print("order book too tight. diming not possible!")
         return
-    price = best_ask_price - tick_size
-    order_info = send_order(ASK_SIDE, config.order_size, price, ORDER_TYPE_LIMIT)
+    price = (best_ask_price + best_bid_price) / 2
+    if side == ASK_SIDE:
+        price = best_ask_price - tick_size
+    elif side == BID_SIDE:
+        price = best_bid_price + tick_size
+    else:
+        raise Exception("unknown side!")
+
+    order_info = send_order(side, config.order_size, price, ORDER_TYPE_LIMIT)
+    print("new order:", order_info)
     return order_info
