@@ -16,16 +16,17 @@ market = ""
 
 # smallest change of a price in the given market
 # a bot dimes another order by this amount to be in front of it
+# the minimum of this setting is market specific, see show_markets.py
 tick_size = "0.00000001"
 
 # size of the diming order
 order_size = 1500
 
-# side of the diming order
+# side of the diming order. BID_SIDE = buy orders are send, ASK_SIDE = sell orders are send
 dime_side = BID_SIDE
 
 # interval in seconds to check for diming possibility
 dime_check_sec = 15
 
-# interval to wash
+# interval to wash. in seconds. yes, hygiene is important to bots!
 wash_check_sec = 40
