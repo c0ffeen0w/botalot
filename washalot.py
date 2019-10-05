@@ -38,7 +38,8 @@ while True:
                 active_order = api.dime(config.dime_side)
             elif api.get_unix_timestamp(0) > nextWashTime:
                 print("wash_order:")
-                wash_size = random.randrange(int(config.min_order_size), int(size))
+                max_size = int(float(size))
+                wash_size = random.randrange(config.min_order_size, max_size)
                 wash_order = api.send_order(get_washing_order_side(), wash_size, price, api.ORDER_TYPE_LIMIT)
                 print(wash_order)
                 nextWashTime = config.wash_check_sec + api.get_unix_timestamp(0)
