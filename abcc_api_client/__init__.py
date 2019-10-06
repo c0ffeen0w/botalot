@@ -117,6 +117,7 @@ def show_markets():
 
 
 def get_order_book():
+    start_time = time.time()
     request_method = "GET"
     request_endpoint = "/api/v1/exchange/order_book"
     tonce = get_corrected_unix_timestamp()
@@ -124,8 +125,12 @@ def get_order_book():
     payload = "{}|{}|{}".format(request_method, request_endpoint, params)
     sig = sign_sha256(config.abcc_secret, payload)
     req = "{}{}?{}&signature={}".format(server, request_endpoint, params, sig)
+    req_time_start = time.time()
     (resp, content) = h.request(req, request_method, headers={'cache-control': 'no-cache'})
+    req_time_interval = time.time() - req_time_start
     data = json.loads(content)
+    total_time_interval = time.time() - start_time
+    print("get_order_book took {} ({})".format(req_time_interval, total_time_interval))
     return data
 
 
