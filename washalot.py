@@ -39,7 +39,7 @@ while True:
                 api.clear_open_orders()
                 active_order = []
                 active_order = api.dime(config.dime_side, config.order_size)
-            elif api.get_unix_timestamp(0) > nextWashTime:
+            elif api.get_unix_timestamp(0) > random.randrange(nextWashTime, nextWashTime+config.wash_check_upperlimit_sec):
                 max_size = int(float(size))
                 wash_size = random.randrange(config.min_order_size, max_size)
                 print("target order:")
