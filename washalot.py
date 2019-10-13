@@ -23,7 +23,7 @@ api.calibrate_time_with_server()
 
 api.clear_open_orders()
 api.show_order_book()
-active_order = api.dime(config.dime_side)
+active_order = api.dime(config.dime_side, config.order_size)
 
 while True:
     try:
@@ -38,11 +38,14 @@ while True:
                     (not api.is_best_size(size, config.dime_side)):
                 api.clear_open_orders()
                 active_order = []
-                active_order = api.dime(config.dime_side)
+                active_order = api.dime(config.dime_side, config.order_size)
             elif api.get_unix_timestamp(0) > nextWashTime:
-                print("wash_order:")
                 max_size = int(float(size))
                 wash_size = random.randrange(config.min_order_size, max_size)
+                print("target order:")
+                target_order = api.dime(config.dime_side, wash_size)
+                print(target_order)
+                print("wash_order:")
                 wash_order = api.send_order(get_washing_order_side(), wash_size, price, api.ORDER_TYPE_LIMIT)
                 print(wash_order)
                 nextWashTime = config.wash_check_sec + api.get_unix_timestamp(0)

@@ -222,7 +222,7 @@ def send_order(side, size, price, type):
     return data['order']
 
 
-def dime(side):
+def dime(side, order_size):
     whole_book = get_order_book()
     bid_side = get_sorted_book_half(whole_book, BID_SIDE)
     ask_side = get_sorted_book_half(whole_book, ASK_SIDE)
@@ -239,6 +239,6 @@ def dime(side):
     else:
         raise Exception("unknown side!")
 
-    order_info = send_order(side, config.order_size, price, ORDER_TYPE_LIMIT)
+    order_info = send_order(side, order_size, price, ORDER_TYPE_LIMIT)
     print("new order:", order_info)
     return order_info
