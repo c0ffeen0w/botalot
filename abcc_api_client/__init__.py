@@ -228,7 +228,7 @@ def dime(side, order_size):
     ask_side = get_sorted_book_half(whole_book, ASK_SIDE)
     best_bid_price = Decimal(get_best_price(bid_side))
     best_ask_price = Decimal(get_best_price(ask_side))
-    if best_ask_price - best_bid_price < tick_size:
+    if best_ask_price - best_bid_price < 2*tick_size:
         print("order book too tight. diming not possible!")
         return
     price = (best_ask_price + best_bid_price) / 2
